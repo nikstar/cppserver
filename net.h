@@ -2,12 +2,6 @@
 #define __SOCK_WRAP_H__
 
 #include <string>
-#include <iostream>
-#include <io.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
 
 namespace net {
     
