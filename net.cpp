@@ -1,12 +1,12 @@
+#include "net.h"
 
 #include <iostream>
-#include <io.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
 
-using namespace net;
+namespace net {
 
 explicit Conn::Conn(int sd) : sd(sd) {};
 
@@ -59,7 +59,7 @@ std::string ConnectionError::Report() {
 }
 
 
-explicit Listner(int sd) : sd(sd);
+explicit Listner(int sd) : sd(sd) {};
 
 Conn Listner::Accept() {
 	auto sd = accept(sd, 0, 0);
@@ -75,4 +75,4 @@ Listner Listen(const int port) {
 }
 
 
-
+}
