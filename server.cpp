@@ -2,7 +2,7 @@
 #include "net.h"
 
 
-void handle(Conn conn) {
+void handle(net::Conn conn) {
     if (!fork()) {
         auto str = conn.ReadString();
         std::cout << "Recieved from client: " << str << std::endl;

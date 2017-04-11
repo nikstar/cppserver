@@ -30,7 +30,7 @@ namespace net {
     
     class ConnctionError : public Error {
     public:
-        std::String Report() {
+        std::string Report() {
             return "Connection error";
         }
     }
@@ -42,6 +42,7 @@ namespace net {
         Conn Accept();
     }
     
+	Listner Listen(const int port);
 }
 
 #endif
