@@ -1,20 +1,21 @@
 #include "net.h"
 
-#include <iostream>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-
-#include <vector>
-#include <cstdlib>
 #include <cstdio>
-#include <unistd.h>
+#include <cstdlib>
 #include <cstring>
 
-#include <string>
-#include <sstream>
 #include <fstream>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
+
+#include <netdb.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <unistd.h>
+
 
 namespace net {
 
@@ -38,7 +39,6 @@ std::string Conn::ReadString() {
 	} while (bytesReceived == MAX_BUF_LENGTH);
 	return rcv;
 }
-
 
 void Conn::WriteString(std::string str) {
 	const auto err = write(sd, str.c_str(), str.size());
@@ -111,8 +111,6 @@ namespace http {
 
 Request::Request(std::string method, std::string endpoint, std::map<std::string, std::string> headers, std::string body)
 	: method(method), endpoint(endpoint), headers(headers), body(body) {}
-
-
 
 Request::Request(std::string str) {
 	std::istringstream ss(str);
@@ -223,5 +221,6 @@ Response DirServer::Handle(Request req) {
     auto body = std::string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
 	return Response(200, {}, body);
 }
+
 
 } // namespace http
