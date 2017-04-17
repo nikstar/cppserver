@@ -14,20 +14,12 @@ namespace net {
         
         std::string ReadString();        
         void WriteString(std::string str);
-        
         void Close();
     };
     
-    Conn Dial(const std::string host, const int port);
+    Conn Dial(const std::string host, const int port); // note: not currently in use
     
-    class Error {
-        std::string msg;
-    public:
-        Error(std::string descr);
 
-        std::string Report();
-    };
-            
     class Listner {
         int sd;
     public:
@@ -37,6 +29,16 @@ namespace net {
     };
     
 	Listner Listen(const int port);
+
+
+    class Error {
+        std::string msg;
+    public:
+        Error(std::string descr);
+
+        std::string Report();
+    };
+    
 }
 
 namespace http {
@@ -50,7 +52,6 @@ namespace http {
         std::string endpoint;
         std::map<std::string, std::string> headers;
         std::string body;
-
     };
 
     std::ostream &operator<<(std::ostream &o, Request const &req);
@@ -66,6 +67,7 @@ namespace http {
 
         std::string str();
     };
+
 
     class Server {
     public:

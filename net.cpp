@@ -52,7 +52,7 @@ void Conn::Close() {
 }
 
 
-Conn Dial(const std::string host, const int port) {
+Conn Dial(const std::string host, const int port) { // note: not fully implemented
 	const auto sd = socket(AF_INET, SOCK_STREAM, 0);
 	sockaddr addr;
 	const auto err = connect(sd, &addr, 100);
