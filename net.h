@@ -3,10 +3,12 @@
 
 #include <string>
 #include <map>
+#include <iostream>
 
 namespace net {
     
     class Conn {
+        int sd;
     public:
         explicit Conn(int sd);
         
@@ -19,23 +21,17 @@ namespace net {
     Conn Dial(const std::string host, const int port);
     
     class Error {
+        std::string msg;
     public:
-        std::string Report() = 0;
-    };
-    
-    class ConnectionError : public Error {
-        std::string descr;
-    public:
-        ConnectionError(std::string descr);
+        Error(std::string descr);
 
-        std::string Report() {
-            return "Connection error: " + descr;
-        }
+        std::string Report();
     };
-        
+            
     class Listner {
+        int sd;
     public:
-        explicit Listner(int sd);
+        explicit Listner(int sd = 0);
         
         Conn Accept();
     };
@@ -47,30 +43,49 @@ namespace http {
 
     class Request {
     public:
-        Request(std::string method = "GET", std::string endpoint, std::map<std::string, std::string> headers, std::string body);
+        Request(std::string method, std::string endpoint, std::map<std::string, std::string> headers, std::string body);
+        Request(std::string str);
 
         std::string method;
         std::string endpoint;
         std::map<std::string, std::string> headers;
         std::string body;
-    }
+
+    };
+
+    std::ostream &operator<<(std::ostream &o, Request const &req);
+
 
     class Response {
     public:
-        Response(int status = 200, std::map<std::string, std::string> headers = std::map(), std::string body);        
+        Response(int status, std::map<std::string, std::string> headers, std::string body);        
 
         int status;
         std::map<std::string, std::string> headers;
         std::string body;
-    }
+
+        std::string str();
+    };
 
     class Server {
-        Listner l;
     public:
-        final void ListenAndServe();
-        virtual Response Handle(Request req);
-    }
+        Server(int port);
 
+        void ListenAndServe();
+        virtual Response Handle(Request req);
+    protected:
+        int port;
+        net::Listner l;
+    };
+
+    class DirServer : public Server {
+    public:
+        DirServer(int port, std::string dir = ".");
+
+        virtual Response Handle(Request req);
+    protected:
+        std::string dir;
+    };
 }
 
 #endif
