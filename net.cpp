@@ -19,7 +19,6 @@
 
 namespace net {
 
-
 Conn::Conn(int sd) : sd(sd) {};
 
 std::string Conn::ReadString() {
@@ -109,6 +108,9 @@ Listner Listen(const int port) {
 namespace http {
 
 
+std::map<int, std::string> codeDesc = {{200, "OK"}, {404, "Not found"}};
+
+
 Request::Request(std::string method, std::string endpoint, std::map<std::string, std::string> headers, std::string body)
 	: method(method), endpoint(endpoint), headers(headers), body(body) {}
 
@@ -164,7 +166,7 @@ Response::Response(int status, std::map<std::string, std::string> headers, std::
 std::string Response::str() {
 	std::ostringstream o;
     o << "HTTP/1.1 ";
-	o << status << ' ' << "OK" << "\r\n"; // todo: implement reason phrases
+	o << status << ' ' << codeDesc[status] << "\r\n"; // todo: implement reason phrases
 	for (const auto & pair : headers) {
 		o << pair.first << ": " << pair.second << std::endl;
 	}
