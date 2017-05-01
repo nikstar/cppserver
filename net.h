@@ -46,7 +46,8 @@ namespace net {
 namespace http {
 
     extern std::map<int, std::string> codeDesc;
-
+    extern std::map<std::string, std::string> contentType;
+    
     class Request {
     public:
         Request(std::string method, std::string endpoint, std::map<std::string, std::string> headers, std::string body);

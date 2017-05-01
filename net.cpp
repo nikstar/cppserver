@@ -111,6 +111,11 @@ namespace http {
 
 std::map<int, std::string> codeDesc = {{200, "OK"}, {404, "Not found"}};
 
+std::map<std::string, std::string> contentTypes = {
+	{"html", "text/html"},
+	{"svg", "image/svg+xml"}
+};
+
 
 Request::Request(std::string method, std::string endpoint, std::map<std::string, std::string> headers, std::string body)
 	: method(method), endpoint(endpoint), headers(headers), body(body) {}
@@ -207,7 +212,6 @@ Response DirServer::Handle(Request req) {
 	}
 	auto fname = dir + req.endpoint;
 
-
 	// http://stackoverflow.com/questions/2912520/read-file-contents-into-a-string-in-c
 	// http://stackoverflow.com/questions/12774207/fastest-way-to-check-if-a-file-exist-using-standard-c-c11-c
 	std::ifstream ifs(fname);
@@ -215,9 +219,11 @@ Response DirServer::Handle(Request req) {
 	if (!ifs.good()) {
 		return Response(404, {}, "");
 	}
-
+	
+	auto ext = fname.substr(fname.find_last_of(".") + 1);
+	auto inferredContentType = contentTypes[ext];
     auto body = std::string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
-	return Response(200, {}, body);
+	return Response(200, {{"Content-Type", inferredContentType}}, body);
 }
 
 
