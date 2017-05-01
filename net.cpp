@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <cstring>
 
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -195,11 +196,6 @@ void Server::ListenAndServe() {
 	}
 }
 
-Response Server::Handle(Request req) {
-	std::cout << req;
-	return Response(200, {}, "<!doctype html><title>Hello</title><h1>Hello from server!</h1>\n");			
-}
-
 
 DirServer::DirServer(int port, std::string dir) : Server(port), dir(dir) {}
 
@@ -224,5 +220,30 @@ Response DirServer::Handle(Request req) {
 	return Response(200, {}, body);
 }
 
+
+Router::Router(int port) : Server(port), routes() {}
+
+void Router::Route(std::string path, std::shared_ptr<Server> srv) {
+	routes.emplace(path, srv);
+}
+
+Response Router::Handle(Request req) {
+	std::string route;
+	for (const auto & pair : routes) {
+		if (std::mismatch(pair.first.begin(), pair.first.end(), req.endpoint.begin()).first == pair.first.end()) {
+			if (pair.first.size() > route.size()) {
+				route = pair.first;
+			}
+		}
+	}
+	std::cerr << "Routing " << req.endpoint << " -> " << route << std::endl;
+	if (route == "") {
+		return Response(404, {}, "");
+	}
+	auto & srv = routes.at(route); // note: find issue with straightforward way
+	req.endpoint.erase(1, route.size() - 1);
+	auto resp = srv->Handle(req);
+	return resp;
+}
 
 } // namespace http

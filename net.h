@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <map>
+#include <memory>
 #include <string>
 
 namespace net {
@@ -71,25 +72,41 @@ namespace http {
         std::string str();
     };
 
+    class Handler {
+    public:
+        virtual Response Handle(Request req) = 0;
+    };
 
-    class Server {
+    class Server : public Handler {
     public:
         Server(int port);
 
         void ListenAndServe();
-        virtual Response Handle(Request req);
+        virtual Response Handle(Request req) = 0;
     protected:
         int port;
         net::Listner l;
     };
 
+
     class DirServer : public Server {
     public:
-        DirServer(int port, std::string dir = ".");
+        DirServer(int port, std::string dir);
 
         virtual Response Handle(Request req);
     protected:
         std::string dir;
+    };
+
+
+    class Router : public Server {
+    public:
+        Router(int port);
+
+        virtual void Route(std::string path, std::shared_ptr<Server> srv);
+        virtual Response Handle(Request req);
+    protected:
+        std::map<std::string, std::shared_ptr<Server> > routes;
     };
 }
 
