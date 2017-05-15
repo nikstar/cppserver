@@ -109,6 +109,7 @@ namespace http {
     protected:
         std::map<std::string, std::shared_ptr<Server> > routes;
     };
+
 }
 
 #endif
