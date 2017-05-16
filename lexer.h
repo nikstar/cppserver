@@ -43,13 +43,19 @@ enum struct Type : int {
     itemIn,
     itemBreak,
     itemContinue,
-    itemReturn    
+    itemReturn,
+
+    null = 0    
 };
 
 struct Item {
     Item(Type typ, string val) : typ(typ), val(val) {}
     Type typ;
     string val;
+
+    operator bool() {
+        return typ != Type::null;
+    }
 };
 
 
